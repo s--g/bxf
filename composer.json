@@ -1,0 +1,17 @@
+{
+    "name": "sg00/bxf",
+    "description": "BX PHP Framework",
+    "license": "proprietary",
+    "require":
+    {
+        "php": "8.1.*",
+        "ext-json": "*",
+        "ext-pdo": "*"
+    },
+    "prefer-stable": true,
+    "autoload": {
+     "psr-4": {
+         "BxF\\": "src/"
+     }
+    }
+}
