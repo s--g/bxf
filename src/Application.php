@@ -5,6 +5,8 @@ namespace BxF;
 
 /**
  * @method string getBasePath()
+ *
+ * @method array getConfig()
  */
 class Application
 {
@@ -12,14 +14,8 @@ class Application
     
     protected array $config;
     
-    /**
-     * @var Router
-     */
     protected Router $router;
     
-    /**
-     * @var string
-     */
     protected string $basePath;
     
     protected array $layoutPaths;
@@ -29,25 +25,29 @@ class Application
      */
     protected Request $request;
     
-    public function __construct()
+    public function __construct(string $configDir)
     {
         $this->layoutPaths = [];
         $this->basePath = '';
+        $this->configDir = null;
+        
+        foreach(glob($configDir.'/*.php') as $configFilename)
+        {
+            $this->config = require($configFilename);
+            
+            if(isset($this->config['php']) && !empty($this->config['php']))
+            {
+                foreach($this->config['php'] as $key => $val)
+                    ini_set($key, $val);
+            }
+        }
+        
         Registry::setApplication($this);
     }
     
     public function setConfig(string $configFilename, string $environment): static
     {
-        $config = require($configFilename);
-        $this->config = $config[$environment];
-        
-        if(isset($this->config['php']) && !empty($this->config['php']))
-        {
-            foreach($this->config['php'] as $key => $val)
-                ini_set($key, $val);
-        }
-        
-        return $this;
+
     }
     
     public function setBasePath(string $path): static
