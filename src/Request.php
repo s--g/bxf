@@ -24,8 +24,22 @@ class Request
         return $this->method == Method::POST;
     }
     
-    public function getPostData(): array
+    public function getPostData()
     {
-        return $_POST;
+        return json_decode(file_get_contents("php://input"), true);
+    }
+    
+    public function getPost(string $name): ?string
+    {
+        $postData = $this->getPostData();
+        return $postData[$name]??null;
+    }
+    
+    public function getRoute()
+    {
+        if(str_starts_with($this->uri, $this->baseUrl))
+            return str_replace($this->baseUrl, '', $this->uri);
+        
+        return $this->uri;
     }
 }

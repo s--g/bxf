@@ -3,6 +3,7 @@
 namespace BxF\Http\Response;
 
 use BxF\Http\Response;
+use BxF\Http\Response\JsonResponse\Status;
 use BxF\PropertyAccess;
 
 /**
@@ -20,9 +21,9 @@ class JsonResponse
 	const STATUS_ERROR = 'error';
 	
 	/**
-	 * @var string
+	 * @var Status
 	 */
-	protected string $status;
+	protected Status $status;
 	
 	/**
 	 * @var ?string
@@ -37,11 +38,11 @@ class JsonResponse
 	/**
 	 * JsonResponse constructor.
 	 *
-	 * @param string $status
+	 * @param Status $status
 	 * @param string|null $message
 	 * @param array|null $data
 	 */
-	public function __construct(string $status, ?string $message, ?array $data)
+	public function __construct(Status $status, ?string $message, ?array $data)
 	{
 		$this->status = $status;
 		$this->message = $message;
@@ -54,7 +55,7 @@ class JsonResponse
 		
 		echo(
 			json_encode([
-				'status' => $this->status,
+				'status' => $this->status->value,
 				'message' => $this->message,
 				'data' => $this->data
 			])

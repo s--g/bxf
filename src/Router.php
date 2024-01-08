@@ -37,9 +37,9 @@ class Router
     public function routeRequest(Request $request) : void
     {
         Registry::setRequest($request);
-        if(array_key_exists($request->getUri(), $this->routes))
+        if(array_key_exists($request->getRoute(), $this->routes))
         {
-            $route = $this->routes[$request->getUri()];
+            $route = $this->routes[$request->getRoute()];
             
             if(!in_array(Method::fromString($_SERVER['REQUEST_METHOD']), $route->getMethods()))
                 throw new InvalidMethodException($_SERVER['REQUEST_METHOD']);

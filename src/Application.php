@@ -27,18 +27,21 @@ class Application
     
     public function __construct(string $configDir)
     {
-        $this->layoutPaths = [];
+        $this->config = [];
         $this->basePath = '';
-        $this->configDir = null;
+        $this->layoutPaths = [];
         
         foreach(glob($configDir.'/*.php') as $configFilename)
         {
-            $this->config = require($configFilename);
+            $config = require($configFilename);
             
-            if(isset($this->config['php']) && !empty($this->config['php']))
+            if(isset($config['php']) && !empty($config['php']))
             {
-                foreach($this->config['php'] as $key => $val)
+                foreach($config['php'] as $key => $val)
+                {
                     ini_set($key, $val);
+                    $config[$key] = $val;
+                }
             }
         }
         
