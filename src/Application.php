@@ -12,7 +12,7 @@ class Application
 {
     use PropertyAccess;
     
-    protected array $config;
+    protected Config $config;
     
     protected Router $router;
     
@@ -27,9 +27,9 @@ class Application
     
     public function __construct(string $configDir)
     {
-        $this->config = [];
         $this->basePath = '';
         $this->layoutPaths = [];
+        $mergedConfig = [];
         
         foreach(glob($configDir.'/*.php') as $configFilename)
         {
@@ -38,13 +38,13 @@ class Application
             if(isset($config['php']) && !empty($config['php']))
             {
                 foreach($config['php'] as $key => $val)
-                {
                     ini_set($key, $val);
-                    $config[$key] = $val;
-                }
             }
+            
+            $mergedConfig = array_merge($mergedConfig, $config);
         }
         
+        $this->config = new Config($mergedConfig);
         Registry::setApplication($this);
     }
     

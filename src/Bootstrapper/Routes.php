@@ -28,8 +28,10 @@ class Routes implements BootstrapperInterface
             $router->addRoute($route);
         
         $config = $application->getConfig();
-        $configuredBaseUrl = $config['base_url']??null;
-        $baseUrl = str_replace('/index.php', '', $_SERVER['SCRIPT_NAME'].$configuredBaseUrl);
+        $baseUrl = $config->get('base_url');
+        if(empty($baseUrl))
+            $baseUrl  = str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']);
+        
         $requestUri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
         
         $application
