@@ -2,10 +2,17 @@
 
 namespace BxF\Db;
 
+use BxF\PropertyAccess;
 use PDO;
 
+/**
+ * @method PDO getConnection()
+ * @method $this setConnection(PDO $value)
+ */
 abstract class Adapter
 {
+    use PropertyAccess;
+    
     protected PDO $connection;
     
     public function __construct(PDO $connection)
