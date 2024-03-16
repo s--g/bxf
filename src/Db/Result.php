@@ -3,6 +3,7 @@
 namespace BxF\Db;
 
 use BxF\Db\Result\Code;
+use BxF\PropertyAccess;
 
 /**
  * @method Code getCode()
@@ -10,6 +11,8 @@ use BxF\Db\Result\Code;
  */
 class Result
 {
+    use PropertyAccess;
+    
     protected Code $code;
     
     public function __construct(Code $code)
