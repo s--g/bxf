@@ -7,6 +7,8 @@ namespace BxF;
  * @method string getBasePath()
  *
  * @method array getConfig()
+ *
+ * @method Router getRouter()
  */
 class Application
 {

@@ -37,10 +37,11 @@ class Routes implements BootstrapperInterface
         $application
             ->setRouter($router)
             ->setRequest(
-                (new Request)
-                    ->setMethod(Method::fromString($_SERVER['REQUEST_METHOD']))
-                    ->setUri($requestUri)
-                    ->setBaseUrl($baseUrl)
+                (new Request(
+                    Method::fromString($_SERVER['REQUEST_METHOD']),
+                    $requestUri,
+                    $baseUrl
+                ))
             );
     }
 }

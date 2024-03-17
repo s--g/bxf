@@ -9,11 +9,20 @@ use BxF\Http\InvalidMethodException;
 use BxF\Http\InvalidContentTypeException;
 
 /**
- * Class Router
+ * @method array getRoutes()
+ *
+ * @method Route getCurrentRoute()
  */
 class Router
 {
+    use PropertyAccess;
+    
+    /**
+     * @var Route[]
+     */
     protected array $routes;
+    
+    protected ?Route $currentRoute;
     
     public function __construct()
     {
@@ -36,20 +45,24 @@ class Router
      */
     public function routeRequest(Request $request) : void
     {
-        Registry::setRequest($request);
-        if(array_key_exists($request->getRoute(), $this->routes))
+        foreach($this->routes as $route)
         {
-            $route = $this->routes[$request->getRoute()];
+            $req = $route->match($request);
+            if($req === null)
+                continue;
             
-            if(!in_array(Method::fromString($_SERVER['REQUEST_METHOD']), $route->getMethods()))
+            Registry::setRequest($req);
+            $this->currentRoute = $route;
+            
+            if(!in_array(Method::fromString($_SERVER['REQUEST_METHOD']), $this->currentRoute->getMethods()))
                 throw new InvalidMethodException($_SERVER['REQUEST_METHOD']);
             
-            if(!empty($route->getContentTypes()) &&
+            if(!empty($this->currentRoute->getContentTypes()) &&
                isset($_SERVER['CONTENT_TYPE']) &&
-               !in_array($_SERVER['CONTENT_TYPE'], $route->getContentTypes()))
+               !in_array($_SERVER['CONTENT_TYPE'], $this->currentRoute->getContentTypes()))
                 throw new InvalidContentTypeException;
             
-            $controllerName = $route->getController();
+            $controllerName = $this->currentRoute->getController();
             $controller = new $controllerName($request);
             Registry::setController($controller);
             $response = $controller->handle();
