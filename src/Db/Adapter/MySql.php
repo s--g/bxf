@@ -15,7 +15,24 @@ class MySql extends Adapter
     public function fetchAll(string $query, array $params = [])
     {
         $stmt = $this->connection->prepare($query);
+        $stmt->setFetchMode(\PDO::FETCH_OBJ);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
+    
+    public function fetchOne(string $query, array $params = [])
+    {
+        $stmt = $this->connection->prepare($query);
+        $stmt->setFetchMode(\PDO::FETCH_OBJ);
         $stmt->execute($params);
         return $stmt->fetch();
+    }
+    
+    public function fetchValue(string $query, array $params = [])
+    {
+        $stmt = $this->connection->prepare($query);
+        $stmt->setFetchMode(\PDO::FETCH_OBJ);
+        $stmt->execute($params);
+        return $stmt->fetchColumn();
     }
 }

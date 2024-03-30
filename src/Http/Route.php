@@ -1,11 +1,8 @@
 <?php
 
-namespace BxF\Router;
+namespace BxF\Http;
 
-use BxF\Http\Method;
 use BxF\PropertyAccess;
-use BxF\Controller;
-use BxF\Request;
 
 /**
  * Class Route
@@ -17,7 +14,7 @@ use BxF\Request;
  * @method $this setRoute(string $value)
  * @method $this setController(string|null $controller)
  */
-class Route
+class Route extends \BxF\Route
 {
     use PropertyAccess;
     
@@ -69,7 +66,7 @@ class Route
         return null;
     }
     
-    public function match(Request $request): ?Request
+    public function match(\BxF\Request $request): ?Request
     {
         $match = true;
         $pathVariables = [];

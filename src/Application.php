@@ -78,7 +78,7 @@ class Application
     public function bootstrap(array $bootstrappers)
     {
         foreach($bootstrappers as $bootstrapper)
-            $bootstrapper->run($this);
+            $bootstrapper->bootstrap($this);
         
         $this->router->routeRequest($this->request);
     }

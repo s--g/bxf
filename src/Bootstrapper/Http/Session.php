@@ -1,9 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace Bootstrapper;
+namespace BxF\Bootstrapper\Http;
 
 use Application;
+use Bootstrapper\BootstrapperInterface;
 
 /**
  * Class Session

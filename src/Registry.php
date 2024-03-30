@@ -3,10 +3,6 @@ declare(strict_types = 1);
 
 namespace BxF;
 
-use BxF\Request;
-use BxF\Controller;
-use BxF\PropertyAccess;
-
 class Registry
 {
     use PropertyAccess;

@@ -16,5 +16,5 @@ interface BootstrapperInterface
 	 * @param Application $application
 	 * @return mixed
 	 */
-	public function run(Application $application);
+	public function bootstrap(Application $application);
 }

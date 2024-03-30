@@ -1,12 +1,12 @@
 <?php
 declare(strict_types = 1);
 
-namespace BxF\Bootstrapper;
+namespace BxF\Bootstrapper\Cli;
 
-use BxF\Router;
-use BxF\Request;
 use BxF\Application;
-use BxF\Http\Method;
+use BxF\Bootstrapper\BootstrapperInterface;
+use BxF\Cli\Request;
+use BxF\Cli\Router;
 
 class Routes implements BootstrapperInterface
 {
@@ -20,28 +20,26 @@ class Routes implements BootstrapperInterface
     /**
      * @param Application $application
      */
-    public function run(Application $application) : void
+    public function bootstrap(Application $application) : void
     {
+        global $argv;
         $router = new Router;
         
         foreach($this->routes as $route)
             $router->addRoute($route);
         
         $config = $application->getConfig();
-        $baseUrl = $config->get('base_url');
-        if(empty($baseUrl))
-            $baseUrl  = str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']);
         
-        $requestUri = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+        if(!isset($argv[1]))
+        {
+            echo("Please specify a route\n");
+            exit(1);
+        }
         
         $application
             ->setRouter($router)
             ->setRequest(
-                (new Request(
-                    Method::fromString($_SERVER['REQUEST_METHOD']),
-                    $requestUri,
-                    $baseUrl
-                ))
+                (new Request($argv))
             );
     }
 }

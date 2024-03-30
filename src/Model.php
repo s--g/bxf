@@ -16,4 +16,17 @@ abstract class Model
     {
         return Validator::validate($this);
     }
+    
+    public static function map($rows): array
+    {
+        $rtn = [];
+        
+        if(empty($rows))
+            return $rtn;
+        
+        foreach($rows as $row)
+            $rtn[] = static::mapRow($row);
+        
+        return $rtn;
+    }
 }
