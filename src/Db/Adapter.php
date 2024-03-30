@@ -24,7 +24,7 @@ abstract class Adapter
     
     public abstract function fetchAll(string $query, array $params = []);
     
-    public abstract function fetchOne(string $query, array $params = []);
+    public abstract function fetchRow(string $query, array $params = []);
     
     public abstract function fetchValue(string $query, array $params = []);
 }

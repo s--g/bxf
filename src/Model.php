@@ -17,6 +17,14 @@ abstract class Model
         return Validator::validate($this);
     }
     
+    public static function mapOne($rows): ?object
+    {
+        if(empty($rows))
+            return null;
+        
+        return static::mapRow($rows);
+    }
+    
     public static function map($rows): array
     {
         $rtn = [];

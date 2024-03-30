@@ -17,13 +17,10 @@ class JsonResponse
 {
 	use PropertyAccess;
 	
-	const STATUS_SUCCESS = 'success';
-	const STATUS_ERROR = 'error';
-	
 	/**
-	 * @var Status
+	 * @var Code
 	 */
-	protected Status $status;
+	protected Code $code;
 	
 	/**
 	 * @var ?string
@@ -38,13 +35,13 @@ class JsonResponse
 	/**
 	 * JsonResponse constructor.
 	 *
-	 * @param Status $status
+	 * @param Code $code
 	 * @param string|null $message
 	 * @param array|null $data
 	 */
-	public function __construct(Status $status, ?string $message, ?array $data)
+	public function __construct(Code $code, ?string $message, ?array $data)
 	{
-		$this->status = $status;
+		$this->code = $code;
 		$this->message = $message;
 		$this->data = $data;
 	}
@@ -52,10 +49,10 @@ class JsonResponse
 	public function render() : void
 	{
 		header('Content-Type: application/json');
-		
+		http_response_code($this->code->value);
+  
 		echo(
 			json_encode([
-				'status' => $this->status->value,
 				'message' => $this->message,
 				'data' => $this->data
 			])

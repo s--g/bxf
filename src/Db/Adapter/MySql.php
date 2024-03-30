@@ -20,7 +20,7 @@ class MySql extends Adapter
         return $stmt->fetchAll();
     }
     
-    public function fetchOne(string $query, array $params = [])
+    public function fetchRow(string $query, array $params = [])
     {
         $stmt = $this->connection->prepare($query);
         $stmt->setFetchMode(\PDO::FETCH_OBJ);
