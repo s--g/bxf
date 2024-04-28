@@ -3,6 +3,10 @@ declare(strict_types = 1);
 
 namespace BxF;
 
+use BxF\Http\Exception\NotFound;
+use BxF\Http\Exception\InvalidContentType;
+use BxF\Http\Exception\InvalidMethod;
+
 /**
  * @method string getBasePath()
  *
@@ -80,6 +84,21 @@ class Application
         foreach($bootstrappers as $bootstrapper)
             $bootstrapper->bootstrap($this);
         
-        $this->router->routeRequest($this->request);
+        try
+        {
+            $this->router->routeRequest($this->request);
+        }
+        catch(InvalidMethod $ex)
+        {
+            // TODO: Return HTTP 405
+        }
+        catch(NotFound $ex)
+        {
+            // TODO: Return HTTP 404
+        }
+        catch(InvalidContentType $ex)
+        {
+            // TODO: Return HTTP 415
+        }
     }
 }
