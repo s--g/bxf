@@ -59,6 +59,11 @@ class Application
 
     }
     
+    public function getBaseUrl()
+    {
+        return 'https://'.$_SERVER['HTTP_HOST'];
+    }
+    
     public function setBasePath(string $path): static
     {
         set_include_path(

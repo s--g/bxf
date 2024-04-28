@@ -42,7 +42,7 @@ class Routes implements BootstrapperInterface
                     Method::fromString($_SERVER['REQUEST_METHOD']),
                     $requestUri,
                     $baseUrl
-                ))
+                ))->setQueryString($_GET)
             );
     }
 }

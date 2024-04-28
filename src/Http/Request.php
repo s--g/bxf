@@ -56,6 +56,11 @@ class Request extends \BxF\Request
         return $this;
     }
     
+    public function getQuery($name): ?string
+    {
+        return $this->queryString[$name] ?? null;
+    }
+    
     public function getPathVariable($name): ?string
     {
         if(!isset($this->pathVariables[$name]))
