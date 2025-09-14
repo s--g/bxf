@@ -7,11 +7,28 @@ use BxF\PropertyAccess;
 use BxF\Session;
 
 /**
+ * @method Method getMethod()
+ * @method $this serMethod(Method $value)
+ *
  * @method string getUri()
  *
  * @method array getUrlParts()
+ * @method $this setUrlParts(array $value)
  *
+ * @method string|null getBody()
+ * @method $this setBody(string|null $value)
+ *
+ * @method string|null getBaseUrl()
+ * @method $this setBaseUrl(string|null $value)
+ *
+ * @method array getQueryString()
+ * @method $this setQueryString(array $value)
+ *
+ * @method array getPathVariables()
  * @method $this setPathVariables(array $value)
+ *
+ * @method Session getSession()
+ * @method $this setSession(Session $value)
  */
 class Request extends \BxF\Request
 {
