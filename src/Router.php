@@ -1,6 +1,8 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace BxF;
+
+use BxF\Http\Route;
 
 /**
  * @method array getRoutes()
@@ -14,20 +16,62 @@ abstract class Router
     use PropertyAccess;
     
     /**
-     * @var Route[]
+     * The collection of routes, indexed by their first part
+     *
+     * @var array
      */
-    protected array $routes;
+    protected array $routesIndexed;
     
     protected ?Route $currentRoute;
     
     /**
+     * @param Route[] $routes
+     * @throws Exception
+     */
+    public function __construct(array $routes)
+    {
+        $this->routesIndexed = [];
+        $this->currentRoute = null;
+        
+        // Build the index
+        foreach($routes as $route)
+            $this->addRoute($route);
+    }
+    
+    /**
      * @param Route $route
      * @return $this
+     * @throws Exception
      */
     public function addRoute(Route $route) : Router
     {
-        $this->routes[$route->getRoute()] = $route;
+        if($part = $route->getRoutePartByIndex(0))
+        {
+            if(!isset($this->routesIndexed[$part]))
+                $this->routesIndexed[$part] = [];
+            
+            $this->routesIndexed[$part][] = $route;
+        }
+        else
+            throw new Exception("Can't add route [".$route->getRoute()."] because it appears to have no parts");
+        
         return $this;
+    }
+    
+    public function listRoutes(): array
+    {
+        return array_merge(...array_values($this->routesIndexed));
+    }
+    
+    /**
+     * Lists routes by their first part
+     *
+     * @param string $firstPart
+     * @return Route[]
+     */
+    public function listRoutesByFirstPart(string $firstPart): array
+    {
+        return $this->routesIndexed[$firstPart]??[];
     }
     
     public abstract function routeRequest(Request $request);

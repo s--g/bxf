@@ -6,12 +6,13 @@
     {
         "php": "^8.2",
         "ext-json": "*",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "firebase/php-jwt": "^6.11"
     },
     "prefer-stable": true,
     "autoload": {
-     "psr-4": {
-         "BxF\\": "src/"
-     }
+        "psr-4": {
+            "BxF\\": "src/"
+        }
     }
 }

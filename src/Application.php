@@ -1,18 +1,24 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types = 1);
 
 namespace BxF;
 
-use BxF\Http\Exception\NotFound;
-use BxF\Http\Exception\InvalidContentType;
-use BxF\Http\Exception\InvalidMethod;
+use BxF\Exception\ExceptionHandler;
+use BxF\Plugin\BootstrapPlugin;
+use BxF\Plugin\PreRenderPlugin;
+use BxF\Plugin\PreResponse;
 
 /**
  * @method string getBasePath()
  *
- * @method array getConfig()
+ * @method Config getConfig()
  *
  * @method Router getRouter()
+ *
+ * @method Request getRequest()
+ * @method $this setRequest(Request $value)
+ *
+ * @method array getHeaders()
+ * @method $this setHeaders(array $value)
  */
 class Application
 {
@@ -26,6 +32,17 @@ class Application
     
     protected array $layoutPaths;
     
+    protected bool $corsEnabled;
+    
+    protected array $responseHeaders;
+    
+    protected array $bootstrappers;
+    
+    /**
+     * @var array Plugin[]
+     */
+    protected array $plugins;
+    
     /**
      * @var Request
      */
@@ -36,6 +53,10 @@ class Application
         $this->basePath = '';
         $this->layoutPaths = [];
         $mergedConfig = [];
+        $this->enableCors = false;
+        $this->headers = [];
+        $this->bootstrappers = [];
+        $this->plugins = [];
         
         foreach(glob($configDir.'/*.php') as $configFilename)
         {
@@ -52,11 +73,13 @@ class Application
         
         $this->config = new Config($mergedConfig);
         Registry::setApplication($this);
+        Registry::setConfig($this->config);
     }
     
-    public function setConfig(string $configFilename, string $environment): static
+    public function addResponseHeader(string $header): static
     {
-
+        $this->responseHeaders[] = $header;
+        return $this;
     }
     
     public function getBaseUrl()
@@ -84,26 +107,52 @@ class Application
         return $this;
     }
     
-    public function bootstrap(array $bootstrappers)
+    /**
+     * Does the following:
+     * * Sends CORS headers
+     * * Enables OPTIONS method implicitly for all routes
+     *
+     * @param bool $value
+     * @return $this
+     */
+    public function enableCors(bool $value): self
     {
-        foreach($bootstrappers as $bootstrapper)
-            $bootstrapper->bootstrap($this);
+        $this->corsEnabled = $value;
+        return $this;
+    }
+    
+    public function isCorsEnabled(): bool
+    {
+        return $this->corsEnabled;
+    }
+    
+    public function bootstrap(array $plugins)
+    {
+        Registry::setExceptionHandler(new ExceptionHandler);
+        $this->plugins = $plugins;
         
         try
         {
+            foreach($this->plugins as $plugin)
+            {
+                if($plugin instanceof BootstrapPlugin)
+                    $plugin->onBootstrap($this);
+            }
+            
             $this->router->routeRequest($this->request);
         }
-        catch(InvalidMethod $ex)
+        catch(\Exception $ex)
         {
-            // TODO: Return HTTP 405
+            echo(Registry::getExceptionHandler()->handle($ex)->render());
         }
-        catch(NotFound $ex)
+    }
+    
+    public function preResponse()
+    {
+        foreach($this->plugins as $plugin)
         {
-            // TODO: Return HTTP 404
-        }
-        catch(InvalidContentType $ex)
-        {
-            // TODO: Return HTTP 415
+            if($plugin instanceof PreRenderPlugin)
+                $plugin->onPreRender();
         }
     }
 }

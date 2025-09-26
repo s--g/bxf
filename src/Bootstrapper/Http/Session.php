@@ -4,14 +4,14 @@ declare(strict_types = 1);
 namespace BxF\Bootstrapper\Http;
 
 use Application;
-use Bootstrapper\BootstrapperInterface;
+use BxF\Plugin\BootstrapPlugin;
 
 /**
  * Class Session
  *
  * @package Bootstrapper
  */
-class Session implements BootstrapperInterface
+class Session implements BootstrapPlugin
 {
 	/**
 	 * @param Application $application
@@ -25,4 +25,9 @@ class Session implements BootstrapperInterface
 		
 		$application->getRequest()->setSession($session);
 	}
+    
+    public function onBootstrap(\BxF\Application $application): bool
+    {
+        // TODO: Implement onBootstrap() method.
+    }
 }

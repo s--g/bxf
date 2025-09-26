@@ -4,5 +4,5 @@ namespace BxF;
 
 abstract class Route
 {
-    public abstract function match(Request $request): ?Request;
+    public abstract function matches(Request $request): bool;
 }

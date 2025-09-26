@@ -4,11 +4,11 @@ declare(strict_types = 1);
 namespace BxF\Bootstrapper\Cli;
 
 use BxF\Application;
-use BxF\Bootstrapper\BootstrapperInterface;
 use BxF\Cli\Request;
 use BxF\Cli\Router;
+use BxF\Plugin\BootstrapPlugin;
 
-class Routes implements BootstrapperInterface
+class Routes implements BootstrapPlugin
 {
     protected array $routes;
     
@@ -20,7 +20,7 @@ class Routes implements BootstrapperInterface
     /**
      * @param Application $application
      */
-    public function bootstrap(Application $application) : void
+    public function onBootstrap(Application $application): bool
     {
         global $argv;
         $router = new Router;
@@ -41,5 +41,7 @@ class Routes implements BootstrapperInterface
             ->setRequest(
                 (new Request($argv))
             );
+        
+        return true;
     }
 }

@@ -48,8 +48,11 @@ class JsonResponse
 	
 	public function render() : void
 	{
-		header('Content-Type: application/json');
-		http_response_code($this->code->value);
+        if(!headers_sent())
+        {
+            header('Content-Type: application/json');
+            http_response_code($this->code->value);
+        }
   
 		echo(
 			json_encode([

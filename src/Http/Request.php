@@ -1,5 +1,4 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types = 1);
 
 namespace BxF\Http;
 
@@ -14,9 +13,6 @@ use BxF\Session;
  *
  * @method array getUrlParts()
  * @method $this setUrlParts(array $value)
- *
- * @method string|null getBody()
- * @method $this setBody(string|null $value)
  *
  * @method string|null getBaseUrl()
  * @method $this setBaseUrl(string|null $value)
@@ -86,21 +82,43 @@ class Request extends \BxF\Request
         return $this->pathVariables[$name];
     }
     
-    public function getPostData()
+    public function getHeaders(): array
+    {
+        return getallheaders();
+    }
+    
+    public function getHeader(string $name): ?string
+    {
+        $headers = $this->getHeaders();
+        return $headers[$name]??null;
+    }
+    
+    public function getCookies(): array
+    {
+        return $_COOKIE;
+    }
+    
+    public function getCookie(string $name): ?string
+    {
+        $cookies = $this->getCookies();
+        return $cookies[$name]??null;
+    }
+    
+    public function getBody()
     {
         return json_decode(file_get_contents("php://input"), true);
     }
     
     public function getPost(string $name): ?string
     {
-        $postData = $this->getPostData();
-        return $postData[$name]??null;
+        $body = $this->getBody();
+        return $body[$name]??null;
     }
     
     public function getRoute()
     {
         if(str_starts_with($this->uri, $this->baseUrl))
-            return str_replace($this->baseUrl, '', $this->uri);
+            return preg_replace('/'.preg_quote($this->baseUrl, '/').'/', '', $this->uri, 1);
         
         return $this->uri;
     }

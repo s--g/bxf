@@ -1,10 +1,11 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace BxF\Db\Adapter;
 
 use BxF\Db\Adapter;
 
-class MySql extends Adapter
+class MySql
+    extends Adapter
 {
     public function query(string $query, array $params = [])
     {

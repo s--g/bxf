@@ -1,8 +1,10 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace BxF\Http;
 
+use BxF\Exception\ConfigurationException;
 use BxF\PropertyAccess;
+use BxF\Request;
 
 /**
  * Class Route
@@ -13,6 +15,9 @@ use BxF\PropertyAccess;
  *
  * @method $this setRoute(string $value)
  * @method $this setController(string|null $controller)
+ *
+ * @method Method[] getAcceptedMethods()
+ * @method $this setAcceptedMethods(array $value)
  */
 class Route extends \BxF\Route
 {
@@ -32,15 +37,20 @@ class Route extends \BxF\Route
     /**
      * @var Method[]
      */
-    protected array $methods;
+    protected array $acceptedMethods;
     
     public function __construct(string $route)
     {
         $this->route = $route;
         $this->controller = null;
         $this->contentTypes = [];
-        $this->methods = [];
-        $this->routeParts = explode('/', $route);
+        $this->acceptedMethods = [];
+        
+        if(!str_starts_with($route, '/'))
+            throw new ConfigurationException("Route [{$route}] must start with a forward slash");
+        
+        $this->routeParts = explode('/', ltrim($route, '/'));
+        
     }
     
     public function acceptContentType(string $type) : Route
@@ -49,13 +59,18 @@ class Route extends \BxF\Route
         return $this;
     }
     
-    public function acceptMethods(array $methods) : Route
+    public function getRoutePartByIndex(int $index): ?string
     {
-        $this->methods = $methods;
-        return $this;
+        return $this->routeParts[$index]??null;
     }
     
-    public function getUrlParameterPositionNumber(string $name): ?int
+    /**
+     * Returns the index of the given route part
+     *
+     * @param string $name
+     * @return int|null
+     */
+    public function getUrlParameterIndex(string $name): ?int
     {
         foreach($this->routeParts as $key => $value)
         {
@@ -66,27 +81,34 @@ class Route extends \BxF\Route
         return null;
     }
     
-    public function match(\BxF\Request $request): ?Request
+    public function matches(Request $request): bool
     {
-        $match = true;
-        $pathVariables = [];
-        foreach($this->routeParts as $index => $routePart)
+        foreach ($this->routeParts as $index => $routePart)
         {
             $requestUrlPart = $request->getUrlPart($index);
+            
             if(str_starts_with($routePart, ':'))
             {
                 if(empty($requestUrlPart))
-                    $match = false;
-                else
-                    $pathVariables[ltrim($routePart, ':')] = $requestUrlPart;
+                    return false;
             }
-            elseif($requestUrlPart != $routePart)
-                $match = false;
+            elseif($requestUrlPart !== $routePart)
+                return false;
         }
         
-        if(!$match)
-            return null;
+        return true;
+    }
+    
+    public function extractPathVariables(Request $request): array
+    {
+        $variables = [];
         
-        return $request->setPathVariables($pathVariables);
+        foreach ($this->routeParts as $index => $routePart)
+        {
+            if (str_starts_with($routePart, ':'))
+                $variables[ltrim($routePart, ':')] = $request->getUrlPart($index);
+        }
+        
+        return $variables;
     }
 }

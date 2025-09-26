@@ -2,20 +2,10 @@
 
 namespace BxF\Http;
 
-enum Method
+enum Method: string
 {
-    case GET;
-    case POST;
-    case PUT;
-    
-    public static function fromString(string $method): ?Method
-    {
-        return match ($method)
-        {
-            'GET' => self::GET,
-            'POST' => self::POST,
-            'PUT' => self::PUT,
-            default => null,
-        };
-    }
+    case GET = 'GET';
+    case POST = 'POST';
+    case PUT = 'PUT';
+    case OPTIONS = 'OPTIONS';
 }
