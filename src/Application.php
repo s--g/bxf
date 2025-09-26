@@ -19,6 +19,9 @@ use BxF\Plugin\PreResponse;
  *
  * @method array getHeaders()
  * @method $this setHeaders(array $value)
+ *
+ * @method array getPlugins()
+ * @method $this setPlugins(array $value)
  */
 class Application
 {
@@ -36,7 +39,7 @@ class Application
     
     protected array $responseHeaders;
     
-    protected array $bootstrappers;
+    protected Registry $registry;
     
     /**
      * @var array Plugin[]
@@ -48,7 +51,7 @@ class Application
      */
     protected Request $request;
     
-    public function __construct(string $configDir)
+    public function __construct(string $configDir, RegistryStore $registryStore)
     {
         $this->basePath = '';
         $this->layoutPaths = [];
@@ -57,6 +60,8 @@ class Application
         $this->headers = [];
         $this->bootstrappers = [];
         $this->plugins = [];
+        
+        Registry::setStore($registryStore);
         
         foreach(glob($configDir.'/*.php') as $configFilename)
         {
@@ -72,8 +77,9 @@ class Application
         }
         
         $this->config = new Config($mergedConfig);
-        Registry::setApplication($this);
-        Registry::setConfig($this->config);
+        Registry::get()
+            ->setApplication($this)
+            ->setConfig($this->config);
     }
     
     public function addResponseHeader(string $header): static
@@ -126,10 +132,9 @@ class Application
         return $this->corsEnabled;
     }
     
-    public function bootstrap(array $plugins)
+    public function run(): void
     {
-        Registry::setExceptionHandler(new ExceptionHandler);
-        $this->plugins = $plugins;
+        Registry::get()->setExceptionHandler(new ExceptionHandler);
         
         try
         {
@@ -143,7 +148,7 @@ class Application
         }
         catch(\Exception $ex)
         {
-            echo(Registry::getExceptionHandler()->handle($ex)->render());
+            echo(Registry::get()->getExceptionHandler()->handle($ex)->render());
         }
     }
     

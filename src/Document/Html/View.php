@@ -47,7 +47,7 @@ class View
     //    $this->layoutScript = self::DEFAULT_LAYOUT;
     //    $this->frameScript = $frameScript;
     
-        //$this->viewScript = Registry::getController()->getDirectory().DIRECTORY_SEPARATOR.$viewScript;
+        //$this->viewScript = Registry::get()->getController()->getDirectory().DIRECTORY_SEPARATOR.$viewScript;
         $this->viewScript = $viewScript;
         
         if(isset($params['params']))

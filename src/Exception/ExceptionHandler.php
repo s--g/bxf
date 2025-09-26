@@ -13,7 +13,7 @@ class ExceptionHandler
 {
     public function onBootstrap(Application $application): bool
     {
-        Registry::setExceptionHandler($this);
+        Registry::get()->setExceptionHandler($this);
         return true;
     }
     

@@ -34,7 +34,7 @@ abstract class Adapter
     
     public function onBootstrap(Application $application):bool
     {
-        Registry::setDb($this);
+        Registry::get()->setDb($this);
         return true;
     }
 }

@@ -16,12 +16,12 @@ class Router extends \BxF\Router
             if($req === null)
                 continue;
             
-            Registry::setRequest($req);
+            Registry::get()->setRequest($req);
             $this->currentRoute = $route;
             
             $controllerName = $this->currentRoute->getController();
             $controller = new $controllerName($request);
-            Registry::setController($controller);
+            Registry::get()->setController($controller);
             $response = $controller->handle();
             echo($response->render());
             return;

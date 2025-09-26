@@ -18,6 +18,6 @@ class HttpExceptionHandler
         else
             $code = Code::ServerError;
         
-        return new LambdaResponse($code, $ex->getMessage(), $ex->getTrace());
+        return new JsonResponse($code, $ex->getMessage(), $ex->getTrace());
     }
 }

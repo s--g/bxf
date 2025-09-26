@@ -41,9 +41,9 @@ class Router
         
         $controllerName = $this->currentRoute->getController();
         $controller = new $controllerName($request);
-        Registry::setController($controller);
+        Registry::get()->setController($controller);
         $response = $controller->handle();
-        Registry::getApplication()->preResponse();
+        Registry::get()->getApplication()->preResponse();
         echo($response->render());
     }
     
@@ -88,7 +88,7 @@ class Router
                 ))->setQueryString($_GET)
             );
         
-        Registry::setRequest($application->getRequest());
+        Registry::get()->setRequest($application->getRequest());
         return true;
     }
 }
