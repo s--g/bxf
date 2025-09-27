@@ -39,7 +39,7 @@ class JsonResponse
 	 * @param string|null $message
 	 * @param array|null $data
 	 */
-	public function __construct(Code $code, ?string $message, ?array $data = null)
+	public function __construct(Code $code, ?string $message = null, ?array $data = null)
 	{
 		$this->code = $code;
 		$this->message = $message;

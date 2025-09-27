@@ -6,7 +6,6 @@ use BxF\Http\Route;
 
 /**
  * @method array getRoutes()
- * @method $this setRoutes(array $value)
  *
  * @method Route getCurrentRoute()
  * @method $this setCurrentRoute(Route $value)
@@ -36,6 +35,14 @@ abstract class Router
         // Build the index
         foreach($routes as $route)
             $this->addRoute($route);
+    }
+    
+    public function setRoutes(array $routes): static
+    {
+        $this->routesIndexed = [];
+        foreach($routes as $route)
+            $this->addRoute($route);
+        return $this;
     }
     
     /**

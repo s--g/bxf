@@ -1,13 +1,34 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace BxF\Http;
 
+use BxF\Application;
+use BxF\Plugin\BootstrapPlugin;
 use BxF\Plugin\PreRenderPlugin;
 use BxF\Registry;
 
 class Cors
-    implements PreRenderPlugin
+    implements BootstrapPlugin, PreRenderPlugin
 {
+    public function onBootstrap(Application $application): bool
+    {
+        $router = $application->getRouter();
+        
+        /**
+         * @var Route $route
+         */
+        foreach($router->listRoutes() as $route)
+        {
+            $router->addRoute(
+                (new Route($route->getRoute()))
+                    ->addAcceptedMethod(Method::OPTIONS)
+                    ->setController('\BxF\Http\CorsResponse')
+            );
+        }
+        
+        return true;
+    }
+    
     public function onPreRender(): bool
     {
         if(headers_sent())

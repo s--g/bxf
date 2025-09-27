@@ -53,6 +53,12 @@ class Route extends \BxF\Route
         
     }
     
+    public function addAcceptedMethod(Method $method): static
+    {
+        $this->acceptedMethods[] = $method;
+        return $this;
+    }
+    
     public function acceptContentType(string $type) : Route
     {
         $this->contentTypes[] = $type;
@@ -81,9 +87,13 @@ class Route extends \BxF\Route
         return null;
     }
     
+    /**
+     * @param \BxF\Http\Request $request
+     * @return bool
+     */
     public function matches(Request $request): bool
     {
-        foreach ($this->routeParts as $index => $routePart)
+        foreach($this->routeParts as $index => $routePart)
         {
             $requestUrlPart = $request->getUrlPart($index);
             
@@ -95,6 +105,9 @@ class Route extends \BxF\Route
             elseif($requestUrlPart !== $routePart)
                 return false;
         }
+        
+        if(!in_array($request->getMethod(), $this->getAcceptedMethods()))
+            return false;
         
         return true;
     }

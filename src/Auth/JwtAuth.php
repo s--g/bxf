@@ -59,7 +59,7 @@ $this->payloadFromClient = new \stdClass();
 $this->payloadFromClient->user_id = '519f3741-b43a-444d-b4c9-a0b20ab9b458';
 $this->payloadFromClient->customer_id = '869d62cf-c2b6-4b20-bb9a-a45ceb672c1a';
 
-        if(!isset($this->payloadFromClient->userId))
+        if(!isset($this->payloadFromClient->user_id))
             return false;
         
         $user = User::getById($this->payloadFromClient->user_id);

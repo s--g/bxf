@@ -152,7 +152,7 @@ class Application
         }
     }
     
-    public function preResponse()
+    public function preResponse(): void
     {
         foreach($this->plugins as $plugin)
         {
