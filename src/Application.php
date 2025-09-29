@@ -56,9 +56,8 @@ class Application
         $this->basePath = '';
         $this->layoutPaths = [];
         $mergedConfig = [];
-        $this->enableCors = false;
-        $this->headers = [];
-        $this->bootstrappers = [];
+        $this->corsEnabled = false;
+        $this->responseHeaders = [];
         $this->plugins = [];
         
         Registry::setStore($registryStore);

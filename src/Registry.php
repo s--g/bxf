@@ -11,6 +11,11 @@ class Registry
         self::$registryStore = $value;
     }
     
+    public static function getStore(): RegistryStore
+    {
+        return self::$registryStore;
+    }
+    
     public static function get(): RegistryStore
     {
         return self::$registryStore;
