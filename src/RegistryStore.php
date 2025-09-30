@@ -4,6 +4,7 @@ namespace BxF;
 
 use BxF\Db\Adapter;
 use BxF\Exception\ExceptionHandler;
+use BxF\Http\Request;
 
 class RegistryStore
 {
@@ -14,6 +15,12 @@ class RegistryStore
     protected ?Config $config = null;
     protected ?Adapter $db = null;
     protected ?User $user = null;
+    protected ?Log $log = null;
+    
+    public static function get(): static
+    {
+        return new self;
+    }
     
     public function getApplication(): ?Application
     {
@@ -92,8 +99,14 @@ class RegistryStore
         return $this;
     }
     
-    public static function get(): static
+    public function getLog(): ?Log
     {
-        return new self;
+        return $this->log;
+    }
+    
+    public function setLog(Log $value): static
+    {
+        $this->log = $value;
+        return $this;
     }
 }
