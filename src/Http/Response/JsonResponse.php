@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 namespace BxF\Http\Response;
 
@@ -12,53 +12,65 @@ use BxF\PropertyAccess;
  * @package Http\Response
  */
 class JsonResponse
-	extends Response
-	implements ResponseInterface
+    extends Response
+    implements ResponseInterface
 {
-	use PropertyAccess;
-	
-	/**
-	 * @var Code
-	 */
-	protected Code $code;
-	
-	/**
-	 * @var ?string
-	 */
-	protected ?string $message;
-	
-	/**
-	 * @var ?array
-	 */
-	protected ?array $data;
-	
-	/**
-	 * JsonResponse constructor.
-	 *
-	 * @param Code $code
-	 * @param string|null $message
-	 * @param array|null $data
-	 */
-	public function __construct(Code $code, ?string $message = null, ?array $data = null)
-	{
-		$this->code = $code;
-		$this->message = $message;
-		$this->data = $data;
-	}
-	
-	public function render() : void
-	{
+    use PropertyAccess;
+    
+    /**
+     * @var Code
+     */
+    protected Code $code;
+    
+    /**
+     * @var ?string
+     */
+    protected ?string $message;
+    
+    /**
+     * @var ?array
+     */
+    protected ?array $data;
+    
+    /**
+     * JsonResponse constructor.
+     *
+     * @param Code $code
+     * @param string|null $message
+     * @param array|null $data
+     */
+    public function __construct(Code $code, ?string $message = null, ?array $data = null)
+    {
+        $this->code = $code;
+        $this->message = $message;
+        $this->data = $data;
+    }
+    
+    public function render(): void
+    {
         if(!headers_sent())
         {
             header('Content-Type: application/json');
             http_response_code($this->code->value);
         }
-  
-		echo(
-			json_encode([
-				'message' => $this->message,
-				'data' => $this->data
-			])
-		);
-	}
+        
+        $response = json_encode([
+            'message' => $this->message,
+            'data' => $this->data
+        ]);
+        
+        if($response === false)
+        {
+            // TODO: Handle this somehow
+            echo("Unable to encode response\n");
+            var_dump($this->message, $this->data);
+        }
+        
+        echo(
+            json_encode([
+                'message' => $this->message,
+                'data' => $this->data
+            ])
+        );
+    }
 }

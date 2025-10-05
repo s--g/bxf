@@ -44,7 +44,7 @@ class Request extends \BxF\Request
     
     protected array $pathVariables;
     
-    protected Session $session;
+    protected ?Session $session;
     
     public function __construct(Method $method, string $uri, string $baseUrl = '')
     {
@@ -55,6 +55,7 @@ class Request extends \BxF\Request
         $this->body = null;
         $this->queryString = [];
         $this->pathVariables = [];
+        $this->session = null;
     }
     
     public function isPost()

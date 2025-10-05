@@ -19,6 +19,7 @@ class ExceptionHandler
     
     public function handle(\Exception $ex): JsonResponse
     {
-        return new JsonResponse(Code::ServerError, 'An error occurred');
+        // TODO: Conditionally send exception message based on env
+        return new JsonResponse(Code::ServerError, $ex->getMessage(), $ex->getTrace());
     }
 }
