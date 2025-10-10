@@ -131,24 +131,19 @@ class Application
         return $this->corsEnabled;
     }
     
+    public function bootstrap(): void
+    {
+        foreach($this->plugins as $plugin)
+        {
+            if($plugin instanceof BootstrapPlugin)
+                $plugin->onBootstrap($this);
+        }
+    }
+    
     public function run(): void
     {
-        Registry::get()->setExceptionHandler(new ExceptionHandler);
-        
-        try
-        {
-            foreach($this->plugins as $plugin)
-            {
-                if($plugin instanceof BootstrapPlugin)
-                    $plugin->onBootstrap($this);
-            }
-            
-            $this->router->routeRequest($this->request);
-        }
-        catch(\Exception $ex)
-        {
-            echo(Registry::get()->getExceptionHandler()->handle($ex)->render());
-        }
+        $this->bootstrap();
+        $this->router->routeRequest($this->request);
     }
     
     public function preResponse(): void

@@ -17,9 +17,9 @@ class ExceptionHandler
         return true;
     }
     
-    public function handle(\Exception $ex): JsonResponse
+    public static function handle(\Throwable $ex): void
     {
         // TODO: Conditionally send exception message based on env
-        return new JsonResponse(Code::ServerError, $ex->getMessage(), $ex->getTrace());
+        (new JsonResponse(Code::ServerError, $ex->getMessage(), $ex->getTrace()))->render();
     }
 }

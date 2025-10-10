@@ -9,6 +9,11 @@ abstract class Model
 {
     use PropertyAccess;
 	
+    public function __construct()
+    {
+    
+    }
+    
     public function validate(): Validator\ValidationResult
     {
         return Validator::validate($this);
@@ -19,7 +24,7 @@ abstract class Model
         if(empty($rows))
             return null;
         
-        return static::mapRow($rows);
+        return static::fromStdClass($rows);
     }
     
     public static function map($rows): array
@@ -30,7 +35,7 @@ abstract class Model
             return $rtn;
         
         foreach($rows as $row)
-            $rtn[] = static::mapRow($row);
+            $rtn[] = static::fromStdClass($row);
         
         return $rtn;
     }
