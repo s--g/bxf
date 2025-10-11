@@ -19,15 +19,15 @@ abstract class Model
         return Validator::validate($this);
     }
     
-    public static function mapOne($rows): ?object
+    public static function mapOne(?\stdClass $row): ?Model
     {
-        if(empty($rows))
+        if(empty($row))
             return null;
         
-        return static::fromStdClass($rows);
+        return static::fromStdClass($row);
     }
     
-    public static function map($rows): array
+    public static function map(array $rows): array
     {
         $rtn = [];
         

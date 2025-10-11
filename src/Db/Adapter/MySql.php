@@ -21,12 +21,15 @@ class MySql
         return $stmt->fetchAll();
     }
     
-    public function fetchRow(string $query, array $params = []): mixed
+    public function fetchRow(string $query, array $params = []): ?\stdClass
     {
         $stmt = $this->connection->prepare($query);
         $stmt->setFetchMode(\PDO::FETCH_OBJ);
         $stmt->execute($params);
-        return $stmt->fetch();
+        $result = $stmt->fetch();
+        if(empty($result))
+            return null;
+        return $result;
     }
     
     public function fetchValue(string $query, array $params = []): string
