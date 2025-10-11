@@ -10,7 +10,7 @@ use BxF\Plugin\BootstrapPlugin;
 use BxF\Plugin\PreRenderPlugin;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use User;
+use Model\User;
 
 class JwtAuth
     implements BootstrapPlugin, PreRenderPlugin
@@ -91,7 +91,7 @@ $this->payloadFromClient->customer_id = '869d62cf-c2b6-4b20-bb9a-a45ceb672c1a';
     public function onPreRender(): bool
     {
         /**
-         * @var User $user
+         * @var Model\User $user
          */
         $user = Registry::get()->getUser();
         
