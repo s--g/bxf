@@ -4,6 +4,8 @@ namespace BxF\Auth;
 
 use BxF\Application;
 use BxF\JwtAuthConfig;
+use BxF\Log\Item;
+use BxF\Log\Priority;
 use BxF\Registry;
 use BxF\Http\Request;
 use BxF\Plugin\BootstrapPlugin;
@@ -34,7 +36,6 @@ class JwtAuth
      */
     public function authorize(Request $request): bool
     {
-        /*
         $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
         if(!$authHeader)
             return false;
@@ -49,15 +50,21 @@ class JwtAuth
         {
             $this->payloadFromClient = JWT::decode($jwt, new Key($this->config->getSigningPublicKey(), self::SIGNING_ALGORITHM));
         }
-        catch(\UnexpectedValueException $e)
+        catch(\UnexpectedValueException $ex)
         {
+            reg()->getEventBus()->raiseEvent(
+                Event::LogWrite,
+                new Item($ex->getMessage, Priority::Error, $ex->getTrace())
+            );
+            
             return false;
         }
-        */
         
+        /*
 $this->payloadFromClient = new \stdClass();
 $this->payloadFromClient->user_id = '519f3741-b43a-444d-b4c9-a0b20ab9b458';
 $this->payloadFromClient->customer_id = '869d62cf-c2b6-4b20-bb9a-a45ceb672c1a';
+        */
 
         if(!isset($this->payloadFromClient->user_id))
             return false;

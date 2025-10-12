@@ -5,6 +5,7 @@ namespace BxF;
 use BxF\Db\Adapter;
 use BxF\Exception\ExceptionHandler;
 use BxF\Http\Request;
+use BxF\Log\Logger;
 
 class RegistryStore
 {
@@ -15,7 +16,7 @@ class RegistryStore
     protected ?Config $config = null;
     protected ?Adapter $db = null;
     protected ?User $user = null;
-    protected ?Log $log = null;
+    protected ?Logger $logger = null;
     
     public static function get(): static
     {
@@ -99,14 +100,14 @@ class RegistryStore
         return $this;
     }
     
-    public function getLog(): ?Log
+    public function getLogger(): ?Logger
     {
-        return $this->log;
+        return $this->logger;
     }
     
-    public function setLog(Log $value): static
+    public function setLogger(Logger $value): static
     {
-        $this->log = $value;
+        $this->logger = $value;
         return $this;
     }
 }

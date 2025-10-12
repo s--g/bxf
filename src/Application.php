@@ -77,9 +77,6 @@ class Application
         
         $this->config = new Config($mergedConfig);
         
-        if($this->config->get('log_level') instanceof Priority)
-            \Log::setLogLevel($this->config->get('log_level'));
-        
         Registry::get()
             ->setApplication($this)
             ->setConfig($this->config);
