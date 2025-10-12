@@ -3,6 +3,8 @@
 namespace BxF\Auth;
 
 use BxF\Application;
+use BxF\Http\Response\Code;
+use BxF\Http\Response\JsonResponse;
 use BxF\JwtAuthConfig;
 use BxF\Log\Item;
 use BxF\Log\Priority;
@@ -36,7 +38,7 @@ class JwtAuth
      */
     public function authorize(Request $request): bool
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION']??'';
         if(!$authHeader)
             return false;
         
@@ -48,7 +50,10 @@ class JwtAuth
         
         try
         {
-            $this->payloadFromClient = JWT::decode($jwt, new Key($this->config->getSigningPublicKey(), self::SIGNING_ALGORITHM));
+            $this->payloadFromClient = JWT::decode(
+                $jwt,
+                new Key($this->config->getSigningPublicKey(), self::SIGNING_ALGORITHM)
+            );
         }
         catch(\UnexpectedValueException $ex)
         {
@@ -74,24 +79,37 @@ $this->payloadFromClient->customer_id = '869d62cf-c2b6-4b20-bb9a-a45ceb672c1a';
         if(empty($user))
             return false;
         
-        Registry::get()->setUser($user);
+        reg()->setUser($user);
         return true;
     }
     
     /**
-     * Takes a username and password and authenticates the user, responding with a JWT (in the body of the response).
+     * Provides an "authenticated" response with jwt in the body
      *
-     * @param Request $request
-     * @return void
+     * @param User $user
+     * @return JsonResponse
      */
-    public function authenticate(string $username, string $password)
+    public function getAuthenticatedResponse(User $user): JsonResponse
     {
-    
+        $jwt = JWT::encode([
+                'user_id' => $user->getId()
+            ],
+            $this->config->getSigningPrivateKey(),
+            self::SIGNING_ALGORITHM
+        );
+        
+        return new JsonResponse(
+            Code::OK,
+            'Authenticated', [
+                'token' => $jwt
+            ]
+        );
     }
     
     public function onBootstrap(Application $application): bool
     {
         $this->authorize(Registry::get()->getRequest());
+        reg()->setAuth($this);
         return true;
     }
     
@@ -99,21 +117,25 @@ $this->payloadFromClient->customer_id = '869d62cf-c2b6-4b20-bb9a-a45ceb672c1a';
     {
         /**
          * @var Model\User $user
-         */
-        $user = Registry::get()->getUser();
+         
+        $user = reg()->getUser();
+        $customer = reg()->getCustomer();
         
-        if(empty($user))
+        if(empty($user) || empty($customer))
             return true;
         
         $jwt = JWT::encode([
                 'user_id' => $user->getId(),
-                'customer_id' => '869d62cf-c2b6-4b20-bb9a-a45ceb672c1a'
+                'customer_id' => $customer->getId()
             ],
             $this->config->getSigningPrivateKey(),
             self::SIGNING_ALGORITHM
         );
         
-        Registry::get()->getApplication()->addResponseHeader('Authorization: bearer '.$jwt);
+        reg()->getApplication()->addResponseHeader('Authorization: bearer '.$jwt);
+         
+         */
+        
         return true;
     }
 }

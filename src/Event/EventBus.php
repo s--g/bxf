@@ -4,7 +4,6 @@ namespace BxF\Event;
 
 use BxF\Event;
 use BxF\EventInterface;
-use BxF\EventHandler;
 
 class EventBus
 {
@@ -18,12 +17,12 @@ class EventBus
      */
     public function __construct(EventHandler ...$handler)
     {
-        $this->listeners = $handler;
+        $this->handlers = $handler;
     }
     
     public function subscribe(EventHandler $handler): static
     {
-        $this->listeners = $handler;
+        $this->handlers = $handler;
         return $this;
     }
     
