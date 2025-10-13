@@ -2,10 +2,10 @@
 
 namespace BxF;
 
-use BxF\Log\Priority;
 use BxF\Plugin\BootstrapPlugin;
 use BxF\Plugin\PreRenderPlugin;
 use BxF\Plugin\PreResponse;
+use BxF\Http\Response;
 
 /**
  * @method string getBasePath()
@@ -14,14 +14,14 @@ use BxF\Plugin\PreResponse;
  *
  * @method Router getRouter()
  *
+ * @method array getPlugins()
+ * @method $this setPlugins(array $value)
+ *
  * @method Request getRequest()
  * @method $this setRequest(Request $value)
  *
- * @method array getHeaders()
- * @method $this setHeaders(array $value)
- *
- * @method array getPlugins()
- * @method $this setPlugins(array $value)
+ * @method Response getResponse()
+ * @method $this setResponse(Response $value)
  */
 class Application
 {
@@ -37,8 +37,6 @@ class Application
     
     protected bool $corsEnabled;
     
-    protected array $responseHeaders;
-    
     protected Registry $registry;
     
     /**
@@ -51,14 +49,19 @@ class Application
      */
     protected Request $request;
     
+    /**
+     * @var Response
+     */
+    protected Response $response;
+    
     public function __construct(string $configDir, RegistryStore $registryStore)
     {
         $this->basePath = '';
         $this->layoutPaths = [];
         $mergedConfig = [];
         $this->corsEnabled = false;
-        $this->responseHeaders = [];
         $this->plugins = [];
+        $this->response = new Response;
         
         Registry::setStore($registryStore);
         
@@ -77,15 +80,9 @@ class Application
         
         $this->config = new Config($mergedConfig);
         
-        Registry::get()
+        reg()
             ->setApplication($this)
             ->setConfig($this->config);
-    }
-    
-    public function addResponseHeader(string $header): static
-    {
-        $this->responseHeaders[] = $header;
-        return $this;
     }
     
     public function getBaseUrl()

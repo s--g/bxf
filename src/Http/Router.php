@@ -41,10 +41,12 @@ class Router
         
         $controllerName = $this->currentRoute->getController();
         $controller = new $controllerName($request);
-        Registry::get()->setController($controller);
-        $response = $controller->handle();
-        Registry::get()->getApplication()->preResponse();
-        echo($response->render());
+        reg()->setController($controller);
+        
+        $app = reg()->getApplication();
+        $app->getResponse()->setBody($controller->handle());
+        $app->preResponse();
+        echo($app->getResponse()->render());
     }
     
     /**

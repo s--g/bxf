@@ -3,8 +3,7 @@
 namespace BxF\Exception;
 
 use BxF\Application;
-use BxF\Http\Response\Code;
-use BxF\Http\Response\JsonResponse;
+use BxF\Http\Response\Body;
 use BxF\Plugin\BootstrapPlugin;
 use BxF\Registry;
 
@@ -17,9 +16,9 @@ class ExceptionHandler
         return true;
     }
     
-    public static function handle(\Throwable $ex): void
+    public static function handle(\Throwable $ex): Body
     {
         // TODO: Conditionally send exception message based on env
-        (new JsonResponse(Code::ServerError, $ex->getMessage(), $ex->getTrace()))->render();
+        return (new JsonBody($ex->getMessage(), $ex->getTrace()));
     }
 }

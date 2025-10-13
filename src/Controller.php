@@ -28,5 +28,5 @@ abstract class Controller
         return dirname((new \ReflectionClass(static::class))->getFileName());
     }
     
-    public abstract function handle(): Response;
+    public abstract function handle(): Response\Body;
 }

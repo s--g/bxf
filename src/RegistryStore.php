@@ -5,12 +5,12 @@ namespace BxF;
 use BxF\Db\Adapter;
 use BxF\Exception\ExceptionHandler;
 use BxF\Http\Request;
+use BxF\Http\Response;
 use BxF\Log\Logger;
 
 class RegistryStore
 {
     protected ?Application $application = null;
-    protected ?Request $request = null;
     protected ?Controller $controller = null;
     protected ?ExceptionHandler $exceptionHandler = null;
     protected ?Config $config = null;
@@ -36,12 +36,23 @@ class RegistryStore
     
     public function getRequest(): ?Request
     {
-        return $this->request;
+        return $this->application->getRequest();
     }
     
     public function setRequest(Request $value): static
     {
-        $this->request = $value;
+        $this->application->setRequest($value);
+        return $this;
+    }
+    
+    public function getResponse(): ?Response
+    {
+        return $this->application->getResponse();
+    }
+    
+    public function setResponse(Response $value): static
+    {
+        $this->application->setResponse($value);
         return $this;
     }
     

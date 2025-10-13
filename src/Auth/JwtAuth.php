@@ -3,8 +3,7 @@
 namespace BxF\Auth;
 
 use BxF\Application;
-use BxF\Http\Response\Code;
-use BxF\Http\Response\JsonResponse;
+use BxF\Http\Response\JsonBody;
 use BxF\JwtAuthConfig;
 use BxF\Log\Item;
 use BxF\Log\Priority;
@@ -87,9 +86,9 @@ $this->payloadFromClient->customer_id = '869d62cf-c2b6-4b20-bb9a-a45ceb672c1a';
      * Provides an "authenticated" response with jwt in the body
      *
      * @param User $user
-     * @return JsonResponse
+     * @return JsonBody
      */
-    public function getAuthenticatedResponse(User $user): JsonResponse
+    public function getAuthenticatedResponse(User $user): JsonBody
     {
         $jwt = JWT::encode([
                 'user_id' => $user->getId()
@@ -98,8 +97,7 @@ $this->payloadFromClient->customer_id = '869d62cf-c2b6-4b20-bb9a-a45ceb672c1a';
             self::SIGNING_ALGORITHM
         );
         
-        return new JsonResponse(
-            Code::OK,
+        return new JsonBody(
             'Authenticated', [
                 'token' => $jwt
             ]
@@ -132,7 +130,7 @@ $this->payloadFromClient->customer_id = '869d62cf-c2b6-4b20-bb9a-a45ceb672c1a';
             self::SIGNING_ALGORITHM
         );
         
-        reg()->getApplication()->addResponseHeader('Authorization: bearer '.$jwt);
+        reg()->getApplication()->getResponse->addHeader('Authorization: bearer '.$jwt);
          
          */
         

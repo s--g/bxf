@@ -2,12 +2,13 @@
 
 namespace BxF\Exception;
 
+use BxF\Http\Response\Body;
 use BxF\Http\Response\Code;
-use BxF\Http\Response\JsonResponse;
+use BxF\Http\Response\JsonBody;
 
 class HttpExceptionHandler
 {
-    public function handle(\Exception $ex): JsonResponse
+    public function handle(\Exception $ex): Body
     {
         if($ex instanceof NotFound)
             $code = Code::NotFound;
@@ -18,6 +19,7 @@ class HttpExceptionHandler
         else
             $code = Code::ServerError;
         
-        return new JsonResponse($code, $ex->getMessage(), $ex->getTrace());
+        reg()->getResponse()->setCode($code);
+        return new JsonBody($ex->getMessage(), $ex->getTrace());
     }
 }

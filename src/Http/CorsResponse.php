@@ -3,14 +3,14 @@
 namespace BxF\Http;
 
 use BxF\Controller;
-use BxF\Http\Response\Code;
-use BxF\Http\Response\JsonResponse;
+use BxF\Http\Response\Body;
+use BxF\Http\Response\JsonBody;
 
 class CorsResponse
     extends Controller
 {
-    public function handle(): Response
+    public function handle(): Body
     {
-        return new JsonResponse(Code::OK);
+        return new JsonBody;
     }
 }
