@@ -31,22 +31,16 @@ class JwtAuth
     }
     
     /**
-     * Retrieves the JWT from the Authorization header and sets the user in the registry
+     * Retrieves the JWT from the session cookie and sets the user in the registry
      *
      * @param Request $request
-     * @return void
+     * @return bool
      */
     public function authorize(Request $request): bool
     {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION']??'';
-        if(!$authHeader)
+        $jwt = reg()->getRequest()->getCookie('session');
+        if(empty($jwt))
             return false;
-        
-        // Expected format: "Bearer <jwt>"
-        if(!preg_match('/Bearer\s(\S+)/', $authHeader, $matches))
-            return false;
-        
-        $jwt = $matches[1];
         
         try
         {
@@ -64,12 +58,6 @@ class JwtAuth
             
             return false;
         }
-        
-        /*
-$this->payloadFromClient = new \stdClass();
-$this->payloadFromClient->user_id = '519f3741-b43a-444d-b4c9-a0b20ab9b458';
-$this->payloadFromClient->customer_id = '869d62cf-c2b6-4b20-bb9a-a45ceb672c1a';
-        */
 
         if(!isset($this->payloadFromClient->user_id))
             return false;
