@@ -13,6 +13,7 @@ use BxF\Plugin\BootstrapPlugin;
 use BxF\Plugin\PreRenderPlugin;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use BxF\Http\Cookie;
 use Model\User;
 
 class JwtAuth
@@ -97,11 +98,9 @@ $this->payloadFromClient->customer_id = '869d62cf-c2b6-4b20-bb9a-a45ceb672c1a';
             self::SIGNING_ALGORITHM
         );
         
-        return new JsonBody(
-            'Authenticated', [
-                'token' => $jwt
-            ]
-        );
+        $cookie = new Cookie('session', $jwt, 1, true, true);
+        reg()->getApplication()->getResponse()->addCookie($cookie);
+        return new JsonBody('Authenticated');
     }
     
     public function onBootstrap(Application $application): bool

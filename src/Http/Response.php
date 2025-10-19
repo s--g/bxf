@@ -65,17 +65,18 @@ class Response
         if($cookieDomain === null)
             $cookieDomain = $_SERVER['HTTP_HOST'];
         
+        $frontEndDomain = reg()->getConfig()->get('front_end_domain');
+        
         foreach($this->cookies as $cookie)
         {
-            setcookie(
-                $cookie->getName(),
-                $cookie->getValue(),
-                time() + 60 * $cookie->getHours(),
-                '',
-                $cookieDomain,
-                $cookie->getSecure(),
-                $cookie->getHttpOnly()
-            );
+            setcookie($cookie->getName(), $cookie->getValue(), [
+                'expires' => time() + 60 * 60 * $cookie->getHours(),
+                'path' => '',
+                'domain' => $cookieDomain,
+                'secure' => $cookie->getSecure(),
+                'httponly' => $cookie->getHttpOnly(),
+                'samesite' => ($cookieDomain == $frontEndDomain)?'Strict':'None'
+            ]);
         }
         
         if(!headers_sent())
