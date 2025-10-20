@@ -77,7 +77,7 @@ class Response
         {
             setcookie($cookie->getName(), $cookie->getValue(), [
                 'expires' => time() + 60 * 60 * $cookie->getHours(),
-                'path' => '',
+                'path' => '/',
                 'domain' => $cookieDomain,
                 'secure' => $cookie->getSecure(),
                 'httponly' => $cookie->getHttpOnly(),

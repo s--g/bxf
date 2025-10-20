@@ -105,7 +105,7 @@ class RegistryStore
         return $this->user;
     }
     
-    public function setUser(User $value): static
+    public function setUser(?User $value): static
     {
         $this->user = $value;
         return $this;
