@@ -51,9 +51,15 @@ class Response
         return $this;
     }
     
+    /**
+     * Adds a cookie, replacing any with the same name
+     *
+     * @param Cookie $cookie
+     * @return $this
+     */
     public function addCookie(Cookie $cookie): static
     {
-        $this->cookies[] = $cookie;
+        $this->cookies[$cookie->getName()] = $cookie;
         return $this;
     }
     

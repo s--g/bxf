@@ -71,16 +71,10 @@ class JwtAuth
         return true;
     }
     
-    /**
-     * Provides an "authenticated" response with jwt in the body
-     *
-     * @param User $user
-     * @return JsonBody
-     */
-    public function getAuthenticatedResponse(User $user): JsonBody
+    public function updateSessionCookie(): void
     {
         $jwt = JWT::encode([
-                'user_id' => $user->getId()
+                'user_id' => reg()->getUser()?->getId()
             ],
             $this->config->getSigningPrivateKey(),
             self::SIGNING_ALGORITHM
@@ -88,7 +82,6 @@ class JwtAuth
         
         $cookie = new Cookie('session', $jwt, 1, true, true);
         reg()->getApplication()->getResponse()->addCookie($cookie);
-        return new JsonBody('Authenticated');
     }
     
     public function onBootstrap(Application $application): bool
@@ -100,27 +93,7 @@ class JwtAuth
     
     public function onPreRender(): bool
     {
-        /**
-         * @var Model\User $user
-         
-        $user = reg()->getUser();
-        $customer = reg()->getCustomer();
-        
-        if(empty($user) || empty($customer))
-            return true;
-        
-        $jwt = JWT::encode([
-                'user_id' => $user->getId(),
-                'customer_id' => $customer->getId()
-            ],
-            $this->config->getSigningPrivateKey(),
-            self::SIGNING_ALGORITHM
-        );
-        
-        reg()->getApplication()->getResponse->addHeader('Authorization: bearer '.$jwt);
-         
-         */
-        
+        $this->updateSessionCookie();
         return true;
     }
 }

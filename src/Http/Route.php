@@ -3,6 +3,7 @@
 namespace BxF\Http;
 
 use BxF\Exception\ConfigurationException;
+use BxF\Http\Exception\InvalidMethod;
 use BxF\PropertyAccess;
 use BxF\Request;
 
@@ -107,7 +108,7 @@ class Route extends \BxF\Route
         }
         
         if(!in_array($request->getMethod(), $this->getAcceptedMethods()))
-            return false;
+            throw new InvalidMethod($request->getUri().' does not support method '.$request->getMethod()->value);
         
         return true;
     }
