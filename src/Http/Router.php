@@ -31,7 +31,8 @@ class Router
         
         $request->setPathVariables($this->currentRoute->extractPathVariables($request));
 
-        if(!in_array(Method::from($_SERVER['REQUEST_METHOD']), $this->currentRoute->getAcceptedMethods()))
+        $method = Method::from($_SERVER['REQUEST_METHOD']);
+        if(!$this->currentRoute->supportsMethod($method))
             throw new InvalidMethod($_SERVER['REQUEST_METHOD']);
         
         if(!empty($this->currentRoute->getContentTypes()) &&
@@ -39,7 +40,7 @@ class Router
            !in_array($_SERVER['CONTENT_TYPE'], $this->currentRoute->getContentTypes()))
             throw new InvalidContentType;
         
-        $controllerName = $this->currentRoute->getController();
+        $controllerName = $this->currentRoute->getHandlerForMethod($method);
         $controller = new $controllerName($request);
         reg()->setController($controller);
         
@@ -55,17 +56,15 @@ class Router
      */
     public function getRouteMatchingRequest(HttpRequest $request): ?Route
     {
-        foreach($this->listRoutesByFirstPart($request->getUrlPart(0)) as $route)
-        {
-            if($route->matches($request))
-                return $route;
-        }
-        
-        return null;
+        return array_find(
+            $this->listRoutesByFirstPart($request->getUrlPart(0)),
+            fn($route) => $route->matches($request)
+        );
     }
     
     /**
      * @param Application $application
+     * @return bool
      * @throws Exception
      */
     public function onBootstrap(Application $application): bool
@@ -83,11 +82,11 @@ class Router
         $application
             ->setRouter($this)
             ->setRequest(
-                (new \BxF\Http\Request(
+                new \BxF\Http\Request(
                     Method::from($_SERVER['REQUEST_METHOD']),
                     $requestUri,
                     $baseUrl
-                ))->setQueryString($_GET)
+                )->setQueryString($_GET)
             );
         
         Registry::get()->setRequest($application->getRequest());

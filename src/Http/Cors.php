@@ -3,6 +3,8 @@
 namespace BxF\Http;
 
 use BxF\Application;
+use BxF\Exception;
+use BxF\Exception\ConfigurationException;
 use BxF\Plugin\BootstrapPlugin;
 use BxF\Plugin\PreRenderPlugin;
 use BxF\Registry;
@@ -10,6 +12,10 @@ use BxF\Registry;
 class Cors
     implements BootstrapPlugin, PreRenderPlugin
 {
+    /**
+     * @throws ConfigurationException
+     * @throws Exception
+     */
     public function onBootstrap(Application $application): bool
     {
         $router = $application->getRouter();
@@ -20,9 +26,8 @@ class Cors
         foreach($router->listRoutes() as $route)
         {
             $router->addRoute(
-                (new Route($route->getRoute()))
-                    ->addAcceptedMethod(Method::OPTIONS)
-                    ->setController('\BxF\Http\CorsResponse')
+                new Route($route->getRoute())
+                    ->addHandler(Method::OPTIONS, '\BxF\Http\CorsResponse')
             );
         }
         

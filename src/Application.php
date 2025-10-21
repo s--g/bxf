@@ -11,8 +11,10 @@ use BxF\Http\Response;
  * @method string getBasePath()
  *
  * @method Config getConfig()
+ * @method $this setConfig(Config $value)
  *
  * @method Router getRouter()
+ * @method $this setRouter(Router $value)
  *
  * @method array getPlugins()
  * @method $this setPlugins(array $value)
@@ -85,7 +87,7 @@ class Application
             ->setConfig($this->config);
     }
     
-    public function getBaseUrl()
+    public function getBaseUrl(): string
     {
         return 'https://'.$_SERVER['HTTP_HOST'];
     }
@@ -104,7 +106,7 @@ class Application
         return $this;
     }
     
-    public function addLayoutPath(string $path)
+    public function addLayoutPath(string $path): static
     {
         $this->layoutPaths[] = $path;
         return $this;

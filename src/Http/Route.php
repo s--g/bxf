@@ -2,6 +2,7 @@
 
 namespace BxF\Http;
 
+use BxF\Controller;
 use BxF\Exception\ConfigurationException;
 use BxF\Http\Exception\InvalidMethod;
 use BxF\PropertyAccess;
@@ -16,9 +17,6 @@ use BxF\Request;
  *
  * @method $this setRoute(string $value)
  * @method $this setController(string|null $controller)
- *
- * @method Method[] getAcceptedMethods()
- * @method $this setAcceptedMethods(array $value)
  */
 class Route extends \BxF\Route
 {
@@ -26,7 +24,7 @@ class Route extends \BxF\Route
     
     protected string $route;
     
-    protected ?string $controller;
+    protected array $handlers;
     
     protected array $routeParts;
     
@@ -36,16 +34,13 @@ class Route extends \BxF\Route
     protected array $contentTypes;
     
     /**
-     * @var Method[]
+     * @throws ConfigurationException
      */
-    protected array $acceptedMethods;
-    
     public function __construct(string $route)
     {
         $this->route = $route;
-        $this->controller = null;
+        $this->handlers = [];
         $this->contentTypes = [];
-        $this->acceptedMethods = [];
         
         if(!str_starts_with($route, '/'))
             throw new ConfigurationException("Route [{$route}] must start with a forward slash");
@@ -54,13 +49,7 @@ class Route extends \BxF\Route
         
     }
     
-    public function addAcceptedMethod(Method $method): static
-    {
-        $this->acceptedMethods[] = $method;
-        return $this;
-    }
-    
-    public function acceptContentType(string $type) : Route
+    public function acceptContentType(string $type): Route
     {
         $this->contentTypes[] = $type;
         return $this;
@@ -79,13 +68,7 @@ class Route extends \BxF\Route
      */
     public function getUrlParameterIndex(string $name): ?int
     {
-        foreach($this->routeParts as $key => $value)
-        {
-            if($name == $value)
-                return $key;
-        }
-        
-        return null;
+        return array_find_key($this->routeParts, fn($value) => $name == $value);
     }
     
     /**
@@ -107,10 +90,22 @@ class Route extends \BxF\Route
                 return false;
         }
         
-        if(!in_array($request->getMethod(), $this->getAcceptedMethods()))
-            throw new InvalidMethod($request->getUri().' does not support method '.$request->getMethod()->value);
-        
         return true;
+    }
+    
+    public function supportsMethod(Method $method): bool
+    {
+        return array_key_exists($method->value, $this->handlers);
+    }
+    
+    public function getHandlerForMethod(Method $method): ?string
+    {
+        return $this->handlers[$method->value] ?? null;
+    }
+    
+    public function getAcceptedMethods(): array
+    {
+        return array_map(fn($method) => Method::from($method), array_keys($this->handlers));
     }
     
     public function extractPathVariables(Request $request): array
@@ -124,5 +119,11 @@ class Route extends \BxF\Route
         }
         
         return $variables;
+    }
+    
+    public function addHandler(Method $method, string $controller): static
+    {
+        $this->handlers[$method->value] = $controller;
+        return $this;
     }
 }
