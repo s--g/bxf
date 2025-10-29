@@ -5,8 +5,6 @@ namespace BxF;
 use BxF\Http\Route;
 
 /**
- * @method array getRoutes()
- *
  * @method Route getCurrentRoute()
  * @method $this setCurrentRoute(Route $value)
  */
@@ -37,6 +35,26 @@ abstract class Router
             $this->addRoute($route);
     }
     
+    /**
+     * @param string $path
+     * @return Route|null
+     */
+    public function getRoute(string $path): ?Route
+    {
+        return array_find(
+            $this->listRoutes(),
+            fn($route) => $route->getPath() === $path
+        );
+    }
+    
+    /**
+     * @return Route[]
+     */
+    public function getRoutes(): array
+    {
+        return $this->routesIndexed;
+    }
+    
     public function setRoutes(array $routes): static
     {
         $this->routesIndexed = [];
@@ -60,7 +78,7 @@ abstract class Router
             $this->routesIndexed[$part][] = $route;
         }
         else
-            throw new Exception("Can't add route [".$route->getRoute()."] because it appears to have no parts");
+            throw new Exception("Can't add route [".$route->getPath()."] because it appears to have no parts");
         
         return $this;
     }

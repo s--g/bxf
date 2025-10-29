@@ -65,6 +65,12 @@ class Response
     
     public function render(): void
     {
+        if(headers_sent())
+        {
+            $this->body->render();
+            return;
+        }
+        
         http_response_code($this->code->value);
         
         $cookieDomain = reg()->getConfig()->get('cookie_domain');
@@ -85,11 +91,8 @@ class Response
             ]);
         }
         
-        if(!headers_sent())
-        {
-            foreach($this->headers as $header)
-                header($header);
-        }
+        foreach($this->headers as $header)
+            header($header);
         
         $this->body->render();
     }

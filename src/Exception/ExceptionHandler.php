@@ -20,10 +20,9 @@ class ExceptionHandler
     {
         // TODO: Conditionally send exception message based on env
         reg()->getResponse()->setBody(
-            new JsonBody(
-                get_class($ex).': '.$ex->getMessage().' in '.$ex->getFile().':'.$ex->getLine(),
-                $ex->getTrace()
-            )
+            (new JsonBody)
+                ->setMessage(get_class($ex).': '.$ex->getMessage().' in '.$ex->getFile().':'.$ex->getLine())
+                ->setData($ex->getTrace())
         );
         
         reg()->getApplication()->preResponse();

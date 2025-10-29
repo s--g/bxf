@@ -20,6 +20,8 @@ class HttpExceptionHandler
             $code = Code::ServerError;
         
         reg()->getResponse()->setCode($code);
-        return new JsonBody($ex->getMessage(), $ex->getTrace());
+        return (new JsonBody)
+            ->setMessage($ex->getMessage())
+            ->setData($ex->getTrace());
     }
 }

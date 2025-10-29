@@ -45,14 +45,21 @@ class JsonBody
     {
         reg()->getApplication()->getResponse()->addHeader('Content-Type: application/json');
         
-        $response = json_encode([
-            'message' => $this->message,
-            'data' => $this->data
-        ]);
+        $fields = [];
+        if(!empty($this->message))
+            $fields['message'] = $this->message;
         
-        if($response === false)
+        if(!empty($this->data))
+            $fields['data'] = $this->data;
+        
+        if(empty($fields))
+            return;
+        
+        $body = json_encode($fields);
+        
+        if($body === false)
             throw new Exception('Unable to encode response');
         
-        echo($response);
+        echo($body);
     }
 }

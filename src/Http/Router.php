@@ -65,13 +65,9 @@ class Router
     /**
      * @param Application $application
      * @return bool
-     * @throws Exception
      */
     public function onBootstrap(Application $application): bool
     {
-        foreach($this->listRoutes() as $route)
-            $this->addRoute($route);
-        
         $config = $application->getConfig();
         $baseUrl = $config->get('base_url');
         if(empty($baseUrl))

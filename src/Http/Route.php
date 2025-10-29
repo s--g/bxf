@@ -2,9 +2,7 @@
 
 namespace BxF\Http;
 
-use BxF\Controller;
 use BxF\Exception\ConfigurationException;
-use BxF\Http\Exception\InvalidMethod;
 use BxF\PropertyAccess;
 use BxF\Request;
 
@@ -13,19 +11,32 @@ use BxF\Request;
  *
  * @package Router
  *
- * @method string getRoute()
+ * @method string getPath()
+ * @method $this setPath(string $value)
  *
- * @method $this setRoute(string $value)
- * @method $this setController(string|null $controller)
+ * @method string[] getHandlers()
+ * @method $this setHandlers(string[] $value)
+ *
+ * @method string[] getRouteParts()
+ * @method $this setRouteParts(string[] $value)
+ *
+ * @method string[] getContentTypes()
+ * @method $this setContentTypes(string[] $value)
  */
 class Route extends \BxF\Route
 {
     use PropertyAccess;
     
-    protected string $route;
+    protected string $path;
     
+    /**
+     * @var string[]
+     */
     protected array $handlers;
     
+    /**
+     * @var string[]
+     */
     protected array $routeParts;
     
     /**
@@ -36,16 +47,16 @@ class Route extends \BxF\Route
     /**
      * @throws ConfigurationException
      */
-    public function __construct(string $route)
+    public function __construct(string $path)
     {
-        $this->route = $route;
+        $this->path = $path;
         $this->handlers = [];
         $this->contentTypes = [];
         
-        if(!str_starts_with($route, '/'))
-            throw new ConfigurationException("Route [{$route}] must start with a forward slash");
+        if(!str_starts_with($path, '/'))
+            throw new ConfigurationException("Route [{$path}] must start with a forward slash");
         
-        $this->routeParts = explode('/', ltrim($route, '/'));
+        $this->routeParts = explode('/', ltrim($path, '/'));
         
     }
     

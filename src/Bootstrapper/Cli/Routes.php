@@ -1,11 +1,11 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types = 1);
 
 namespace BxF\Bootstrapper\Cli;
 
 use BxF\Application;
 use BxF\Cli\Request;
 use BxF\Cli\Router;
+use BxF\Exception;
 use BxF\Plugin\BootstrapPlugin;
 
 class Routes implements BootstrapPlugin
@@ -19,6 +19,8 @@ class Routes implements BootstrapPlugin
     
     /**
      * @param Application $application
+     * @return bool
+     * @throws Exception
      */
     public function onBootstrap(Application $application): bool
     {
@@ -27,8 +29,6 @@ class Routes implements BootstrapPlugin
         
         foreach($this->routes as $route)
             $router->addRoute($route);
-        
-        $config = $application->getConfig();
         
         if(!isset($argv[1]))
         {
@@ -39,7 +39,7 @@ class Routes implements BootstrapPlugin
         $application
             ->setRouter($router)
             ->setRequest(
-                (new Request($argv))
+                new Request($argv)
             );
         
         return true;
