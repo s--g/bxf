@@ -9,6 +9,12 @@ use BxF\PropertyAccess;
  * Class JsonBody
  *
  * @package Http\Response
+ *
+ * @method string|null getMessage()
+ * @method $this setMessage(string|null $value)
+ *
+ * @method array|null getData()
+ * @method $this setData(array|null $value)
  */
 class JsonBody
     extends Body
@@ -28,14 +34,11 @@ class JsonBody
     
     /**
      * JsonBody constructor.
-     *
-     * @param string|null $message
-     * @param array|null $data
      */
-    public function __construct(?string $message = null, ?array $data = null)
+    public function __construct()
     {
-        $this->message = $message;
-        $this->data = $data;
+        $this->message = null;
+        $this->data = null;
     }
     
     public function render(): void
