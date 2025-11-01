@@ -2,6 +2,9 @@
 
 namespace BxF\Exception;
 
+use BxF\Http\Exception\InvalidContentType;
+use BxF\Http\Exception\InvalidMethod;
+use BxF\Http\Exception\NotFound;
 use BxF\Http\Response\Body;
 use BxF\Http\Response\Code;
 use BxF\Http\Response\JsonBody;

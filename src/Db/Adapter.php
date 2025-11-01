@@ -24,13 +24,13 @@ abstract class Adapter
         $this->connection = $connection;
     }
     
-    public abstract function query(string $query, array $params = []);
+    public abstract function query(string $query, array $params = []): void;
     
-    public abstract function fetchAll(string $query, array $params = []);
+    public abstract function fetchAll(string $query, array $params = []): false|array;
     
-    public abstract function fetchRow(string $query, array $params = []);
+    public abstract function fetchRow(string $query, array $params = []): ?\stdClass;
     
-    public abstract function fetchValue(string $query, array $params = []);
+    public abstract function fetchValue(string $query, array $params = []): string;
     
     public function onBootstrap(Application $application):bool
     {

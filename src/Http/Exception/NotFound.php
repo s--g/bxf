@@ -2,7 +2,7 @@
 
 namespace BxF\Http\Exception;
 
-use BxF\Exception;
+use BxF\Http\Exception;
 
 class NotFound extends Exception
 {
