@@ -30,7 +30,7 @@ abstract class Adapter
     
     public abstract function fetchRow(string $query, array $params = []): ?\stdClass;
     
-    public abstract function fetchValue(string $query, array $params = []): string;
+    public abstract function fetchValue(string $query, array $params = []): string|int;
     
     public function onBootstrap(Application $application):bool
     {

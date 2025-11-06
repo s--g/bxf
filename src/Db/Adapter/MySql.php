@@ -32,7 +32,7 @@ class MySql
         return $result;
     }
     
-    public function fetchValue(string $query, array $params = []): string
+    public function fetchValue(string $query, array $params = []): string|int
     {
         $stmt = $this->connection->prepare($query);
         $stmt->setFetchMode(\PDO::FETCH_OBJ);
