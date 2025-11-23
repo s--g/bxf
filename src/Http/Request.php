@@ -14,9 +14,6 @@ use BxF\Session;
  * @method array getUrlParts()
  * @method $this setUrlParts(array $value)
  *
- * @method string|null getBaseUrl()
- * @method $this setBaseUrl(string|null $value)
- *
  * @method array getQueryString()
  * @method $this setQueryString(array $value)
  *
@@ -38,18 +35,15 @@ class Request extends \BxF\Request
     
     protected ?string $body;
     
-    protected ?string $baseUrl;
-    
     protected array $queryString;
     
     protected array $pathVariables;
     
     protected ?Session $session;
     
-    public function __construct(Method $method, string $uri, string $baseUrl = '')
+    public function __construct(Method $method, string $uri)
     {
         $this->method = $method;
-        $this->baseUrl = $baseUrl;
         $this->urlParts = [];
         $this->setUri($uri);
         $this->body = null;
@@ -58,7 +52,7 @@ class Request extends \BxF\Request
         $this->session = null;
     }
     
-    public function isPost()
+    public function isPost(): bool
     {
         return $this->method == Method::POST;
     }
@@ -105,7 +99,7 @@ class Request extends \BxF\Request
         return $cookies[$name]??null;
     }
     
-    public function getBody()
+    public function getBody(): string
     {
         return json_decode(file_get_contents("php://input"), true);
     }
@@ -116,12 +110,9 @@ class Request extends \BxF\Request
         return $body[$name]??null;
     }
     
-    public function getRoute()
+    public function getRoute(): string
     {
-        if(str_starts_with($this->uri, $this->baseUrl))
-            return preg_replace('/'.preg_quote($this->baseUrl, '/').'/', '', $this->uri, 1);
-        
-        return $this->uri;
+        return ltrim($this->uri, '/');
     }
     
     public function getUrlPart(int $index): ?string

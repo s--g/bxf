@@ -58,12 +58,12 @@ class Application
     
     public function __construct(string $configDir, RegistryStore $registryStore)
     {
-        $this->basePath = '';
         $this->layoutPaths = [];
         $mergedConfig = [];
         $this->corsEnabled = false;
         $this->plugins = [];
         $this->response = new Response;
+        $this->basePath = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
         
         Registry::setStore($registryStore);
         

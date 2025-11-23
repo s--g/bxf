@@ -68,20 +68,20 @@ class Router
      */
     public function onBootstrap(Application $application): bool
     {
-        $config = $application->getConfig();
-        $baseUrl = $config->get('base_url');
-        if(empty($baseUrl))
-            $baseUrl  = str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']);
+        $requestPath = $_SERVER['REQUEST_URI'];
+        $basePath = reg()->getApplication()->getBasePath();
         
-        $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        if(str_starts_with($requestPath, $basePath))
+            $requestPath =  substr($requestPath, strlen($basePath));
+        
+        $requestPath = parse_url($requestPath, PHP_URL_PATH);
         
         $application
             ->setRouter($this)
             ->setRequest(
                 new \BxF\Http\Request(
                     Method::from($_SERVER['REQUEST_METHOD']),
-                    $requestUri,
-                    $baseUrl
+                    $requestPath
                 )->setQueryString($_GET)
             );
         
